@@ -8,22 +8,70 @@
 
 // Apply the java plugin to add support for Java
 apply plugin: 'java'
+apply plugin: 'maven'
+apply plugin: 'maven-publish'
 
-// Apply the application plugin to add support for building an application
-apply plugin: 'application'
+apply plugin: 'idea'
+
+group = 'io.digdag.plugin'
+version = '0.1.0'
+
+def digdagVersion = '0.9.12'
 
 // In this section you declare where to find the dependencies of your project
 repositories {
-    // Use jcenter for resolving your dependencies.
-    // You can declare any Maven/Ivy/file repository here.
+    mavenCentral()
     jcenter()
+    maven {
+        url 'https://dl.bintray.com/digdag/maven'
+    }
 }
 
 dependencies {
-    // This dependency is found on compile classpath of this component and consumers.
-    compile 'com.google.guava:guava:21.0'
+    provided 'io.digdag:digdag-spi:' + digdagVersion
+    // provided 'io.digdag:digdag-standards:' + digdagVersion
+    provided 'io.digdag:digdag-plugin-utils:' + digdagVersion  // this should be 'compile' once digdag 0.9.12 is released to a built-in repository
 
     // Use JUnit test framework
     testCompile 'junit:junit:4.12'
+}
+
+sourceSets {
+    main {
+        compileClasspath += configurations.provided
+        test.compileClasspath += configurations.provided
+        test.runtimeClasspath += configurations.provided
+    }
+}
+
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            // artifactId 'project1-sample'        
+            from components.java
+        }
+    }
+    repositories {
+        maven {
+            url "$buildDir/repo"
+        }
+    }
+}
+
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
+
+compileJava.options.encoding = 'UTF-8'
+compileTestJava.options.encoding = 'UTF-8'
+
+tasks.withType(JavaCompile) {
+    options.compilerArgs << "-Xlint:unchecked" << "-Xlint:deprecation"
+}
+
+javadoc {
+    options {
+        locale = 'en_US'
+        encoding = 'UTF-8'
+    }
 }
 
