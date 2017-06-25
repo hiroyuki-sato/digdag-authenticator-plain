@@ -12,6 +12,7 @@ apply plugin: 'maven'
 apply plugin: 'maven-publish'
 
 apply plugin: 'idea'
+apply plugin: 'maven'
 
 group = 'io.digdag.plugin'
 version = '0.1.0'
