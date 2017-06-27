@@ -28,6 +28,10 @@ repositories {
     }
 }
 
+configurations {
+    provided
+}
+
 dependencies {
     provided 'io.digdag:digdag-spi:' + digdagVersion
     // provided 'io.digdag:digdag-standards:' + digdagVersion
